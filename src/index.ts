@@ -77,13 +77,29 @@ function customPreprocess(code: string) {
   }
 }
 
+function mergePreprocess(
+  originalPreprocess?: (code: string, options?: any) => string
+) {
+  return (code: string, options?: any) => {
+    const codeAfterOriginal = originalPreprocess
+      ? originalPreprocess(code, options)
+      : code;
+    const codeAfterSort = customPreprocess(codeAfterOriginal);
+    return codeAfterSort;
+  };
+}
+
 export const parsers = {
   babel: {
     ...babelParser.parsers.babel,
-    preprocess: customPreprocess,
+    preprocess: mergePreprocess(babelParser.parsers.babel.preprocess),
   },
   typescript: {
     ...typescriptParser.parsers.typescript,
-    preprocess: customPreprocess,
+    preprocess: mergePreprocess(typescriptParser.parsers.typescript.preprocess),
+  },
+  "babel-ts": {
+    ...babelParser.parsers["babel-ts"],
+    preprocess: mergePreprocess(babelParser.parsers["babel-ts"].preprocess),
   },
 };
