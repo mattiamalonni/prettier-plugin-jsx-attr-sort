@@ -1,14 +1,19 @@
 import babelParser from "prettier/parser-babel";
+import typescriptParser from "prettier/parser-typescript";
 import { parse } from "@babel/parser";
+import generate from "@babel/generator";
+import traverse from "@babel/traverse";
 import * as t from "@babel/types";
 
-type BabelParser = typeof babelParser.parsers.babel;
+// Fix for ESM compatibility with @babel/traverse and @babel/generator
+const babelTraverse = (traverse as any).default || traverse;
+const babelGenerate = (generate as any).default || generate;
 
 const SPECIAL_ATTRS = ["key", "ref"];
 
 function sortJSXAttributes(
   attributes: (t.JSXAttribute | t.JSXSpreadAttribute)[]
-): (t.JSXAttribute | t.JSXSpreadAttribute)[] {
+) {
   const result: (t.JSXAttribute | t.JSXSpreadAttribute)[] = [];
   let buffer: t.JSXAttribute[] = [];
 
@@ -34,7 +39,7 @@ function sortJSXAttributes(
   for (const attr of attributes) {
     if (t.isJSXSpreadAttribute(attr)) {
       flush();
-      result.push(attr); // keep spread in place
+      result.push(attr);
     } else {
       buffer.push(attr);
     }
@@ -44,43 +49,41 @@ function sortJSXAttributes(
   return result;
 }
 
-function traverse(node: t.Node): void {
-  if (t.isJSXOpeningElement(node)) {
-    node.attributes = sortJSXAttributes(node.attributes);
-  }
+function sortJSXAttributesInText(code: string): string {
+  const ast = parse(code, {
+    sourceType: "module",
+    plugins: ["typescript", "jsx"],
+  });
 
-  for (const key in node) {
-    const child = (node as any)[key];
-    if (Array.isArray(child)) {
-      child.forEach((c) => {
-        if (c && typeof c.type === "string") traverse(c);
-      });
-    } else if (
-      child &&
-      typeof child === "object" &&
-      typeof child.type === "string"
-    ) {
-      traverse(child);
-    }
+  babelTraverse(ast, {
+    JSXOpeningElement(path: any) {
+      path.node.attributes = sortJSXAttributes(path.node.attributes);
+    },
+  });
+
+  const output = babelGenerate(ast, {
+    retainLines: true,
+    jsescOption: { minimal: true },
+  }).code;
+  return output;
+}
+
+function customPreprocess(code: string) {
+  try {
+    return sortJSXAttributesInText(code);
+  } catch (err) {
+    console.warn("[prettier-plugin-jsx-attr-sort] Parsing error:", err);
+    return code;
   }
 }
 
-export const parsers: Record<string, BabelParser> = {
+export const parsers = {
   babel: {
     ...babelParser.parsers.babel,
-    preprocess(text: string) {
-      try {
-        const ast = parse(text, {
-          sourceType: "module",
-          plugins: ["jsx", "typescript"],
-        });
-
-        traverse(ast.program);
-      } catch (err) {
-        console.warn("Failed to parse JSX:", err);
-      }
-
-      return text;
-    },
+    preprocess: customPreprocess,
+  },
+  typescript: {
+    ...typescriptParser.parsers.typescript,
+    preprocess: customPreprocess,
   },
 };

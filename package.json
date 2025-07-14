@@ -1,6 +1,6 @@
 {
   "name": "prettier-plugin-jsx-attr-sort",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Prettier plugin for sorting JSX attributes",
   "keywords": [
     "prettier",
@@ -30,8 +30,12 @@
     "prettier": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/generator": "^7.28.0",
     "@babel/parser": "^7.28.0",
+    "@babel/traverse": "^7.28.0",
     "@babel/types": "^7.28.1",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.20.7",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3"
