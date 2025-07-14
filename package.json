@@ -1,0 +1,42 @@
+{
+  "name": "prettier-plugin-jsx-attr-sort",
+  "version": "1.0.0",
+  "description": "Prettier plugin for sorting JSX attributes",
+  "keywords": [
+    "prettier",
+    "plugin",
+    "jsx",
+    "attributes",
+    "sort"
+  ],
+  "author": "Mattia Malonni",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mattiamalonni/prettier-plugin-jsx-attr-sort"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/parser": "^7.28.0",
+    "@babel/types": "^7.28.1",
+    "prettier": "^3.6.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
