@@ -115,6 +115,12 @@ The plugin follows these sorting rules:
 - Node.js >= 18.0.0
 - Prettier >= 3.0.0
 
+## Tailwind CSS Compatibility
+
+I've opened a Pull Request to add support for plugin composition, which would allow you to use both `prettier-plugin-jsx-attr-sort` and `prettier-plugin-tailwindcss` together seamlessly.
+
+**👍 Please upvote and support the PR:** [prettier-plugin-tailwindcss#383](https://github.com/tailwindlabs/prettier-plugin-tailwindcss/pull/383)
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
