@@ -1,6 +1,6 @@
 {
   "name": "prettier-plugin-jsx-attr-sort",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Prettier plugin for sorting JSX attributes",
   "keywords": [
     "prettier",

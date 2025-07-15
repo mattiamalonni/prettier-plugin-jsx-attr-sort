@@ -1,5 +1,5 @@
-import { parsers as babelParsers } from "prettier/parser-babel";
-import { parsers as typescriptParsers } from "prettier/parser-typescript";
+import babelParser from "prettier/parser-babel";
+import typescriptParser from "prettier/parser-typescript";
 import preprocessor from "./preprocessor";
 
 function mergePreprocess(originalPreprocess?: (code: string, options?: any) => string) {
@@ -12,15 +12,15 @@ function mergePreprocess(originalPreprocess?: (code: string, options?: any) => s
 
 export const parsers = {
   babel: {
-    ...babelParsers.babel,
-    preprocess: mergePreprocess(babelParsers.babel.preprocess),
+    ...babelParser.parsers.babel,
+    preprocess: mergePreprocess(babelParser.parsers.babel.preprocess),
   },
   typescript: {
-    ...typescriptParsers.typescript,
-    preprocess: mergePreprocess(typescriptParsers.typescript.preprocess),
+    ...typescriptParser.parsers.typescript,
+    preprocess: mergePreprocess(typescriptParser.parsers.typescript.preprocess),
   },
   "babel-ts": {
-    ...babelParsers["babel-ts"],
-    preprocess: mergePreprocess(babelParsers["babel-ts"].preprocess),
+    ...babelParser.parsers["babel-ts"],
+    preprocess: mergePreprocess(babelParser.parsers["babel-ts"].preprocess),
   },
 };
